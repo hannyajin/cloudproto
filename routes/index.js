@@ -3,7 +3,8 @@ var router = express.Router();
 
 var data = {
   title: 'Buffclouds',
-  content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+  content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  navList: [{ name: 'Home'}, {name: 'About'}]
 }
 
 /* GET home page. */

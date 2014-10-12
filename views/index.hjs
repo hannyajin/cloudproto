@@ -14,8 +14,9 @@
       <div class="col col-8">
         <nav>
           <ul>
-            <li>Home</li>
-            <li>About</li>
+            {{#navList}}
+              <li><a href="#">{{ name }}</a></li>
+            {{/navList}}
           </ul>
         </nav>
       </div>
