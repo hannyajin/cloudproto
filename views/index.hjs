@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{ title }}</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='/stylesheets/base.css' />
+  </head>
+  <body>
+    <div class="row clear">
+      <div class="col col-4">
+        <img class="logo" src="{{ logo }}">
+        <h1>{{ title }}</h1>
+      </div>
+      <div class="col col-8">
+        <nav>
+          <ul>
+            <li>Home</li>
+            <li>About</li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+    <div class="row clear">
+      <div class="col col-12">
+        <p>Welcome to {{ title }}</p>
+        <p>{{ content }}</p>
+      </div>
+    </div>
+  </body>
+</html>
