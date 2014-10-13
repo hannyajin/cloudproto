@@ -32,16 +32,6 @@
     </section>
 
     <div class="links-list">
-      <section class="lightBlue">
-        <div class="row clear">
-          <div class="col col-2">
-
-          </div>
-          <div class="col col-10">
-
-          </div>
-        </div>
-      </section>
     </div>
 
     <section class="bot">
@@ -60,38 +50,54 @@
 
       var count = 0;
 
-      function Link(msg) {
+      function makeLink(msg) {
         if (!msg)
           return;
         count++;
-        '<section class="' + ((count % 2 === 0) ? 'lightBlue' : 'light') + '">' +
+
+        var tid = new Date().getTime();
+
+        var str = '<section id="' + (msg.id || tid) + '" hidden class="' + ((count % 2 === 0) ? 'lightBlue' : 'light') + '">' +
           '<div class="row clear">' +
-            '<div class="col col-2">' +
-              '<img src="' + msg.imgsrc + '">' +
+            '<div class="col col-4">' +
+              '<img class="thumbnail" src="' + msg.imgsrc + '">' +
             '</div>' +
-            '<div class="col col-10">' +
+            '<div class="col col-8">' +
               '<h3>' + msg.title + '</h3>' +
               '<p>' + msg.desc + '</p>' +
             '</div>' +
           '</div>' +
-        '</section>'
+        '</section>';
+
+        return {
+          data: str,
+          id: msg.id || tid
+        };
       }
 
       function uploadLink() {
         console.log("uploadLink called!");
         var url = $('#uInput').val();
 
+        var data = {
+          url: url
+        }
+
         var xhr = $.ajax({
           type: "POST",
           url: "/api/upload",
           data: JSON.stringify({url: url}),
+          contentType: "application/json",
           dataType: "json"
         });
 
         xhr.done(function(msg) {
           console.log(msg);
 
-          $(".links-list").appendChild( new Link(msg) )
+          var l = makeLink(msg);
+
+          $(".links-list").prepend( l.data );
+          $('#' + l.id + '').show(600);
         });
 
         xhr.fail(function(o, status, err) {
