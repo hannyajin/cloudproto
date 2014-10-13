@@ -27,13 +27,69 @@
   -o-transform:      rotate(@deg);
 }
 
+/**
+  * LESS
+  */
+
+@linkColor: #EEE;
+@bgColor: #212933;
+@lightBlueColor: #E5EEFF;
+@lightColor: #E4E5E7;
+@textColor: #222;
+
+
+
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font: 14px "Source Sans Pro", sans-serif, Helvetica, Arial, sans-serif;
+  background-color: @bgColor;
 }
 
+section {
+  background-color: @bgColor;
+}
+
+footer {
+  background-color: @bgColor;
+}
+
+.input {
+
+  input:valid {
+    background-color: #E5EEFF;
+  }
+
+  input:invalid {
+    background-color: #FDD;
+  }
+}
+
+.top {
+  background-color: @bgColor;
+}
+
+.bot {
+  background-color: @bgColor;
+}
+
+.lightBlue {
+  background-color: @lightBlueColor;
+}
+
+.light {
+  background-color: @lightColor;
+}
+
+h1 {
+  font-family:Verdana, Arial, Helvetica, sans-serif;
+  font-size:16px;
+  font-weight:bold;
+  margin:0;
+  padding:0;
+  color: @linkColor;
+  }
+
 a:visited {
-  color: #000;
+  color: @linkColor;
 }
 
 a:before {
@@ -43,7 +99,7 @@ a:before {
   height: 2px;
   bottom: 0;
   left: 0;
-  background-color: #000;
+  background-color: @linkColor;
   visibility: hidden;
 
   .transform(scaleX(0));
@@ -52,12 +108,12 @@ a:before {
 
 a {
   position: relative;
-  color: #000;
+  color: @linkColor;
   text-decoration: none;
 }
 
 a:hover {
-  color: #000;
+  color: @linkColor;
 }
 
 a:hover:before {
@@ -65,6 +121,29 @@ a:hover:before {
   .transform(scaleX(1));
 }
 
-nav li {
-  display: inline-block;
+nav {
+
+  padding-bottom: 40px;
+
+  width: 100%;
+  background-color: @bgColor;
+
+  ul {
+    margin: 0;
+    padding: 10px 10px 0 50px;
+    list-style: none;
+  }
+
+  li {
+    a {
+      color: #EEE;
+    }
+
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    color: #EEE;
+    font-weight: strong;
+    padding: 2px;
+  }
 }
