@@ -32,14 +32,17 @@
     </section>
 
     <div class="links-list">
+      <!-- posted link will accumulate here -->
     </div>
 
     <section class="bot">
-      <div class="row clear">
-        <div class="col col-12">
-
+      <footer class="text-center">
+        <div class="row clear">
+          <div class="col col-12">
+            <p>{{ footer }}</p>
+          </div>
         </div>
-      </div>
+      </footer>
     </section>
 
     <footer>
@@ -47,6 +50,12 @@
 
 
     <script type="text/javascript">
+
+      $(function() {
+        {{#sampleList}}
+          uploadLink( '{{ url }}' );
+        {{/sampleList}}
+      });
 
       var count = 0;
 
@@ -75,9 +84,9 @@
         };
       }
 
-      function uploadLink() {
+      function uploadLink(url) {
         console.log("uploadLink called!");
-        var url = $('#uInput').val();
+        var url = url || $('#uInput').val();
 
         var data = {
           url: url
@@ -108,9 +117,6 @@
 
         return false;
       }
-
-      console.log("JS Loaded.");
-
     </script>
 
   </body>
