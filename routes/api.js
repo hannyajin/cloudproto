@@ -57,6 +57,8 @@ router.get('/upload', function(req, res) {
 });
 
 function getImgData(url, callback) {
+  console.log("Geting image data!");
+
   if (!cache[url] || !cache[url].data) {
     // cache link
     cache[url] = {
@@ -66,6 +68,8 @@ function getImgData(url, callback) {
     }
 
     jthumb.getSiteThumbnail(url, function(err, data) {
+      console.log("Using J-Thumb!");
+
       if (err) {
         console.log(err);
         callback(err);
@@ -96,7 +100,7 @@ router.get('/thumbnail/:url', function(req, res) {
   console.log("URL: " + url);
 
   if (!url) {
-    res.end(404);
+    res.status(404).end();
     return;
   }
 
