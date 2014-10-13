@@ -5,8 +5,11 @@ var jthumb = require('jin-thumb');
 var parseuri = require('parseuri');
 var http = require('http');
 
+var sha1 = require('sha1');
 
 var cache = {
+};
+var sha1cache = {
 };
 var count = 0;
 var limit = 100;
@@ -29,6 +32,44 @@ router.post('/upload', function(req, res) {
 
   if (json.url) {
 
+      var sha1url = sha1(json.url);
+
+      // start loading image
+      getImgData(json.url, function(err, data) {
+        if (err) {
+          console.log(err);
+          return;
+        }
+
+        // map it to the sha1 cache
+        if (!sha1cache[sha1url]) {
+          sha1cache[sha1url] = {
+            url: json.url,
+            data: data
+          };
+        } else {
+          var obj = sha1cache[sha1url];
+          obj.url = json.url;
+          obj.data = data;
+
+          // check for listeners
+          if (obj.listeners) {
+            for (var i = 0; i < obj.listeners.length; i++) {
+              var r = obj.listeners[i];
+              try {
+                r.end(data, 'binary');
+              } catch (err) {
+                console.log("Error with reply to listeners: " + err);
+              }
+
+              // empty array
+              obj.listeners.length = 0;
+            }
+
+          }
+        }
+      });
+
       getImgInfo(json.url, function(err, info) {
         if (err) {
           console.log(err);
@@ -40,7 +81,7 @@ router.post('/upload', function(req, res) {
         var msg = {
           title: info.title || "No Title Found.",
           desc: info.desc || "No Description Found.",
-          imgsrc: "/api/thumbnail/" + parseuri(json.url).host
+          imgsrc: "/api/thumbnail/" + sha1url
         }
 
         res.send(msg)
@@ -106,7 +147,7 @@ router.get('/thumbnail/:url', function(req, res) {
     return;
   }
 
-  getImgData(url, function(err, data) {
+  /*getImgData(url, function(err, data) {
     if (err) {
       console.log(err);
       res.status(500).end();
@@ -114,7 +155,21 @@ router.get('/thumbnail/:url', function(req, res) {
     }
 
     res.end(data, 'binary');
-  });
+  });*/
+
+  var obj = sha1cache[url];
+  if (obj && obj.data) {
+    res.end(obj.data, 'binary');
+  } else {
+    // set a listener on the cache and don't respond.
+    if (!sha1cache[url])
+      sha1cache[url] = {};
+
+    var o = sha1cache[url];
+    o.listeners = [];
+    o.listeners.push(res);
+  }
+
 });
 
 
@@ -126,10 +181,11 @@ function getImgInfo(url, callback) {
   if (!(cache[url] && cache[url].desc && cache[url].title)) {
 
     var pu = parseuri(url);
+    console.log(pu);
 
     var opts = {
       host: (~pu.host.indexOf('www.')) ? pu.host : 'www.' + pu.host,
-      path: pu.relative || pu.patch
+      path: pu.relative || pu.path
     };
 
     var req = http.request(opts, function(res) {
