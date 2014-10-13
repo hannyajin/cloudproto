@@ -60,13 +60,18 @@ function getImgData(url, callback) {
   console.log("Geting image data!");
 
   if (!cache[url] || !cache[url].data) {
+    console.log("at line 63.");
+
     // cache link
-    cache[url] = {
-      url: url,
-      hits: 0,
-      created: new Date().getTime()
+    if (!cache[url]) {
+      cache[url] = {
+        url: url,
+        hits: 0,
+        created: new Date().getTime()
+      }
     }
 
+    console.log("at line 74.");
     jthumb.getSiteThumbnail(url, function(err, data) {
       console.log("Using J-Thumb!");
 
@@ -86,9 +91,14 @@ function getImgData(url, callback) {
       callback(null, data);
     });
   } else { // link already cached.
+    console.log("at line 94.");
+
     var obj = cache[url];
+    console.log("at line 97.");
     obj.hits++;
+    console.log("at line 99.");
     callback(null, obj.data);
+    console.log("at line 101.");
   }
 }
 
