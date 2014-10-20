@@ -1,0 +1,35 @@
+
+Buffclouds specification comments
+----------------------------------
+----------------------------------
+
+
+
+
+# Mail
+----------------------------------
+
+
+Client
+
+Oct 11, 2014
+1:58 pm
+
+Hi Christian,
+Appreciate the comments. 
+
+The picture should be like Facebook does it when posting a link.
+
+Every member of a cloud should be able to move a link into a sub cloud. The feature specification do though have an error: It should not be possible to move a link from one cloud to another. Only to copy/paste.
+
+Evry member of a cloud should be able to delete a link. Only cloud creator can delete the whole cloud.
+
+This way the admin settings should be almost as flat and simple as possible. 
+
+Design is initially not included in the project.
+
+I think the estimated period for development is fair. I do though believe that the guesstimated price is a bit high compared to my expectations of this project. I do though appreciate your good communication and understanding of the project.
+
+What language would you code this in?
+
+----------------------------------

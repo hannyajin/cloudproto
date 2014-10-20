@@ -14,10 +14,13 @@ var sha1cache = {
 var count = 0;
 var limit = 100;
 
+var sha1CacheTimout = {
+};
+
 /* POST */
 router.post('/upload', function(req, res) {
   var json = JSON.stringify(req.body);
-  console.log(json);
+  //console.log(json);
 
   // test data
   var data = {
@@ -34,41 +37,50 @@ router.post('/upload', function(req, res) {
 
       var sha1url = sha1(json.url);
 
-      // start loading image
-      getImgData(json.url, function(err, data) {
-        if (err) {
-          console.log(err);
-          return;
-        }
+      var t = sha1CacheTimout[sha1url];
+      if (!t || t.date < (Date.now()) - 1000 * 60) {
+        sha1CacheTimout[sha1url] = {
+          date: Date.now()
+        };
 
-        // map it to the sha1 cache
-        if (!sha1cache[sha1url]) {
-          sha1cache[sha1url] = {
-            url: json.url,
-            data: data
-          };
-        } else {
-          var obj = sha1cache[sha1url];
-          obj.url = json.url;
-          obj.data = data;
+        // start loading image
+        getImgData(json.url, function(err, data) {
+          if (err) {
+            console.log(err);
+            return;
+          }
 
-          // check for listeners
-          if (obj.listeners) {
-            for (var i = 0; i < obj.listeners.length; i++) {
-              var r = obj.listeners[i];
-              try {
-                r.end(data, 'binary');
-              } catch (err) {
-                console.log("Error with reply to listeners: " + err);
+          // map it to the sha1 cache
+          if (!sha1cache[sha1url]) {
+            sha1cache[sha1url] = {
+              url: json.url,
+              data: data
+            };
+          } else {
+            var obj = sha1cache[sha1url];
+            obj.url = json.url;
+            obj.data = data;
+
+            // check for listeners
+            if (obj.listeners) {
+              for (var i = 0; i < obj.listeners.length; i++) {
+                var r = obj.listeners[i];
+                try {
+                  r.end(data, 'binary');
+                } catch (err) {
+                  console.log("Error with reply to listeners: " + err);
+                }
+
+                // empty array
+                obj.listeners.length = 0;
               }
 
-              // empty array
-              obj.listeners.length = 0;
             }
-
           }
-        }
-      });
+        });
+      } else {
+        console.log("Skipped Phantom JS because of duplicate~~~~~~~~~~~~~~")
+      }
 
       getImgInfo(json.url, function(err, info) {
         if (err) {
@@ -181,7 +193,7 @@ function getImgInfo(url, callback) {
   if (!(cache[url] && cache[url].desc && cache[url].title)) {
 
     var pu = parseuri(url);
-    console.log(pu);
+    //console.log(pu);
 
     var opts = {
       host: (~pu.host.indexOf('www.')) ? pu.host : 'www.' + pu.host,
@@ -264,6 +276,7 @@ router.get('/info/:url', function(req, res) {
 var liteCache = {};
 var liteCacheNeedsUpdate = true;
 
+/*
 router.get('/cache', function(req, res) {
 
   if (liteCacheNeedsUpdate) {
@@ -291,6 +304,7 @@ router.get('/cache', function(req, res) {
   }
 
 });
+*/
 
 
 module.exports = router;

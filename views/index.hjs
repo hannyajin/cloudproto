@@ -87,6 +87,11 @@
       function uploadLink(url) {
         console.log("uploadLink called!");
         var url = url || $('#uInput').val();
+        $('#uInput').val("");
+
+        if (!url || url.length < 1) {
+          return false;
+        } 
 
         var data = {
           url: url
