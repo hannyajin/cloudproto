@@ -52,9 +52,27 @@
     <script type="text/javascript">
 
       $(function() {
-        {{#sampleList}}
-          uploadLink( '{{ url }}' );
-        {{/sampleList}}
+        // get recent uploaded links or sampleList
+        $.ajax({
+          method: 'GET',
+          url: '/api/mostrecent',
+          success: function(data, status, xhr) {
+            if (!data || data.length < 1) {
+            {{#sampleList}}
+              uploadLink( '{{ url }}' );
+            {{/sampleList}}
+              return;
+            }
+            for (var i in data) {
+              uploadLink(data[i]);
+            }
+          },
+          error: function(xhr, status, error) {
+            {{#sampleList}}
+              uploadLink( '{{ url }}' );
+            {{/sampleList}}
+          }
+        });
       });
 
       var count = 0;

@@ -12,7 +12,6 @@ var data = {
     {url: 'http://www.reddit.com/r/javascript'},
     {url: 'http://www.thetimes.co.uk/tto/news/'},
     {url: 'http://www.iltasanomat.fi/'},
-    {url: 'https://www.youtube.com/watch?v=57-0adg5g3U'},
     {url: 'http://tinysong.com/#/share/Savant - Melody Circus/37735522'},
     {url: 'https://www.youtube.com/watch?v=QTzyMxfTZv0'}
   ],

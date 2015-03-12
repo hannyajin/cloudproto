@@ -17,10 +17,12 @@ var limit = 100;
 var sha1CacheTimout = {
 };
 
+var recentLinks = [];
+
 /* POST */
 router.post('/upload', function(req, res) {
   var json = JSON.stringify(req.body);
-  //console.log(json);
+  console.log(json);
 
   // test data
   var data = {
@@ -38,7 +40,7 @@ router.post('/upload', function(req, res) {
       var sha1url = sha1(json.url);
 
       var t = sha1CacheTimout[sha1url];
-      if (!t || t.date < (Date.now()) - 1000 * 60) {
+      if (!t || t.date < (Date.now()) - 1000 * 30) {
         sha1CacheTimout[sha1url] = {
           date: Date.now()
         };
@@ -73,6 +75,10 @@ router.post('/upload', function(req, res) {
 
                 // empty array
                 obj.listeners.length = 0;
+                // add the link to the recent list
+                recentLinks.splice(0, 0, obj.url);
+                recentLinks.length = Math.min(recentLinks.length, 10);
+                console.log("recent links length: " + recentLinks.length);
               }
 
             }
@@ -106,13 +112,13 @@ router.post('/upload', function(req, res) {
 
 });
 
-router.get('/upload', function(req, res) {
+router.get('/mostrecent', function(req, res) {
+  console.log("Sending client list of most recent links");
+  return res.json(recentLinks).end();
 });
 
 function getImgData(url, callback) {
-
   if (!cache[url] || !cache[url].data) {
-
     // cache link
     if (!cache[url]) {
       cache[url] = {
@@ -123,7 +129,6 @@ function getImgData(url, callback) {
     }
 
     jthumb.getSiteThumbnail(url, function(err, data) {
-
       if (err) {
         console.log(err);
         callback(err);
@@ -140,7 +145,6 @@ function getImgData(url, callback) {
       callback(null, data);
     });
   } else { // link already cached.
-
     var obj = cache[url];
     obj.hits++;
     callback(null, obj.data);
@@ -149,25 +153,13 @@ function getImgData(url, callback) {
 
 /* GET users listing. */
 router.get('/thumbnail/:url', function(req, res) {
-  
   var url = req.params.url;
-
   console.log("URL: " + url);
 
   if (!url) {
     res.status(404).end();
     return;
   }
-
-  /*getImgData(url, function(err, data) {
-    if (err) {
-      console.log(err);
-      res.status(500).end();
-      return;
-    }
-
-    res.end(data, 'binary');
-  });*/
 
   var obj = sha1cache[url];
   if (obj && obj.data) {
@@ -181,7 +173,6 @@ router.get('/thumbnail/:url', function(req, res) {
     o.listeners = [];
     o.listeners.push(res);
   }
-
 });
 
 
@@ -196,7 +187,7 @@ function getImgInfo(url, callback) {
     //console.log(pu);
 
     var opts = {
-      host: (~pu.host.indexOf('www.')) ? pu.host : 'www.' + pu.host,
+      host: pu.host,
       path: pu.relative || pu.path
     };
 
